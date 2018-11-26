@@ -4,12 +4,14 @@ Neuron activation functions:
     softmax
     sigmoid
 '''
+
 import math
 import numpy as np
 
 
 def relu(x):
-    pass
+    '''f(x) -> x'''
+    return x
 
 
 def softmax(x_arr: np.array) -> np.array:
