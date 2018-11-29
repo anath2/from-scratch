@@ -11,7 +11,7 @@ import numpy as np
 
 def relu(x):
     '''f(x) -> x'''
-    return x
+    return max(0, x)
 
 
 def softmax(x_arr: np.array) -> np.array:
@@ -23,6 +23,16 @@ def softmax(x_arr: np.array) -> np.array:
     return result
 
 
-def sigmoid(x):
-    pass
+def tanh(x):
+    '''
+    Hyperbolic tangent functions
+    '''
+    num = math.exp(2 * x) - 1
+    denom = math.exp(2 * x) + 1
+    return num / denom
 
+def logistic(x):
+    '''
+    Logistic function.
+    '''
+    return 1.0 / (1 + math.exp(-1 * x))
