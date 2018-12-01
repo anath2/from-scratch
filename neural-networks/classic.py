@@ -19,8 +19,42 @@ class NNException(Exception):
 
 # Neural network
 
-def make_network(layers_dims, activation_funcs):
-    pass
+def make_network(input_vect, node_counts: List, activation_funcs: Callable):
+    '''
+    Make a neural network
+    ARGS:
+        layers_dims: Number of nodes in each layer of the neural network
+        activation_funcs: Activation function for each layer
+    '''
+    layers = []
+    previous_layer = input_vect
+    for layer_size, activation_func in zip(node_counts, activation_funcs):
+        input_dims = len(input_vect)
+        weight_matrix = np.random.randn(layer_size, input_dims)
+        bias_vector = np.random.randn(layer_size)
+        layer_vect = calculate_next_layer(weight_matrix, previous_layer, bias_vector, activation_func)
+        new_layer = make_layer(layer_vect, weight_matrix, activation_func)
+        layers.append(new_layer)
+        previous_layer = layer_vect
+
+    return layers
+
+
+def calculate_next_layer(
+        weights_matrix: np.array,
+        input_vector: np.array,
+        bias_vector: np.array,
+        activation_func: Callable
+) -> np.array:
+    '''
+    Calculates the next layer of a neural network
+    '''
+    weighted_sum = weights_matrix.dot(input_vector)
+    weighted_sum = weighted_sum + bias_vector
+    activation_func_vectorized = np.vectorize(activation_func)
+    next_layer = activation_func_vectorized(weighted_sum)
+    return next_layer
+
 
 
 # Network layer:
@@ -73,8 +107,6 @@ def train_network(input_X: np.array, output_y: np.array, network: object, epoch_
 
 
 
-
-
 def init_network(layers_dims: List, activation_funcs: List) -> Callable:
     '''
     Initialize a neural network setting random values for weights
@@ -97,21 +129,6 @@ def init_network(layers_dims: List, activation_funcs: List) -> Callable:
 
     return _forward_propagation
 
-
-def calculate_next_layer(
-        weights_matrix: np.array,
-        input_vector: np.array,
-        bias_vector: np.array,
-        activation_func: Callable
-) -> np.array:
-    '''
-    Calculates the next layer of a neural network
-    '''
-    weighted_sum = weights_matrix.dot(input_vector)
-    weighted_sum = weighted_sum + bias_vector
-    activation_func_vectorized = np.vectorize(activation_func)
-    next_layer = activation_func_vectorized(weighted_sum)
-    return next_layer
 
 
 def make_node(weight_count: int, activation_func: Callable) -> Tuple[np.array, Callable]:
