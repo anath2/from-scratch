@@ -31,6 +31,7 @@ def tanh(x):
     denom = math.exp(2 * x) + 1
     return num / denom
 
+
 def logistic(x):
     '''
     Logistic function.
