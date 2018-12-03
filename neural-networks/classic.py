@@ -9,6 +9,7 @@ Adjust values for weights with gradient descent
 
 '''
 
+from collections import namedtuple
 from typing import Callable, List, Tuple
 import numpy as np
 
@@ -19,7 +20,7 @@ class NNException(Exception):
 
 # Neural network
 
-def make_network(input_vect, node_counts: List, activation_funcs: Callable):
+def make_network(input_vect, node_counts: List, activation_funcs: Callable) -> List:
     '''
     Make a neural network
     ARGS:
@@ -27,17 +28,20 @@ def make_network(input_vect, node_counts: List, activation_funcs: Callable):
         activation_funcs: Activation function for each layer
     '''
     layers = []
-    previous_layer = input_vect
-    for layer_size, activation_func in zip(node_counts, activation_funcs):
-        input_dims = len(input_vect)
-        weight_matrix = np.random.randn(layer_size, input_dims)
-        bias_vector = np.random.randn(layer_size)
-        layer_vect = calculate_next_layer(weight_matrix, previous_layer, bias_vector, activation_func)
-        new_layer = make_layer(layer_vect, weight_matrix, activation_func)
-        layers.append(new_layer)
-        previous_layer = layer_vect
+
+    #TODO
 
     return layers
+
+
+def make_layer(previous_layer: object, layer_node_count: int, activation_func: Callable) -> object:
+    '''Create a layer of the neural network'''
+    input_dims = len(previous_layer)
+    weight_matrix = np.random.randn(layer_size, input_dims)
+    bias_vector = np.random.randn(layer_size)
+    layer_vect = calculate_next_layer(weight_matrix, previous_layer, bias_vector, activation_func)
+    new_layer = make_layer(layer_vect, weight_matrix, activation_func)
+    return new_layer
 
 
 def calculate_next_layer(
@@ -56,7 +60,6 @@ def calculate_next_layer(
     return next_layer
 
 
-
 # Network layer:
 
 def make_layer(layer_vect: int, weight_matrix: np.array, activation_func: Callable):
@@ -67,32 +70,8 @@ def make_layer(layer_vect: int, weight_matrix: np.array, activation_func: Callab
         weights: A matrix of incoming weights to the network
         activation_func: Neural network activation function
     '''
-    return (layer_vect, weight_matrix, activation_func)
-
-
-def get_layer_value(layer: Tuple):
-    '''
-    Get number of nodes in the layer
-    '''
-    layer_vect = layer[0]
-    return layer_vect
-
-
-def get_layer_weights_matrix(layer: Tuple):
-    '''
-    Get weights going into the layer of the neural
-    network
-    '''
-    weight_matrix = layer[1]
-    return weight_matrix
-
-
-def get_layer_activation_func(layer: Tuple):
-    '''
-    Get layer activation function
-    '''
-    activation_func = layer[2]
-    return activation_func
+    NetworkLayer = namedtuple('NetworkLayer', 'layer_vect, weight_matrix, activation_func')
+    return NetworkLayer(layer_vect=layer_vect, weight_matrix=weight_matrix, activation_func=activation_func)
 
 
 # Train Network
@@ -103,8 +82,6 @@ def train_network(input_X: np.array, output_y: np.array, network: object, epoch_
         network = backward_prop(output_y, network)
 
     return network
-
-
 
 
 def init_network(layers_dims: List, activation_funcs: List) -> Callable:
