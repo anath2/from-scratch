@@ -27,21 +27,25 @@ def make_network(input_vect, node_counts: List, activation_funcs: Callable) -> L
         layers_dims: Number of nodes in each layer of the neural network
         activation_funcs: Activation function for each layer
     '''
-    layers = []
+
+    def _add_to_network(prev_layer, layer_node_count, activation_func, neural_network):
+        prev_layer_vect = prev_layer.layer_vect
+        return neural_network + make_layer(prev_layer_vect, layer_node_count, activation_func)
 
     #TODO
 
     return layers
 
+# Network Layer
 
-def make_layer(previous_layer: object, layer_node_count: int, activation_func: Callable) -> object:
+def make_layer(input_vect: object, layer_node_count: int, activation_func: Callable) -> object:
     '''Create a layer of the neural network'''
-    input_dims = len(previous_layer)
+    input_dims = len(input_vect)
     weight_matrix = np.random.randn(layer_size, input_dims)
     bias_vector = np.random.randn(layer_size)
     layer_vect = calculate_next_layer(weight_matrix, previous_layer, bias_vector, activation_func)
-    new_layer = make_layer(layer_vect, weight_matrix, activation_func)
-    return new_layer
+    NetworkLayer = namedtuple('NetworkLayer', 'layer_vect, weight_matrix, activation_func')
+    return NetworkLayer(layer_vect=layer_vect, weight_matrix=weight_matrix, activation_func=activation_func)
 
 
 def calculate_next_layer(
@@ -58,20 +62,6 @@ def calculate_next_layer(
     activation_func_vectorized = np.vectorize(activation_func)
     next_layer = activation_func_vectorized(weighted_sum)
     return next_layer
-
-
-# Network layer:
-
-def make_layer(layer_vect: int, weight_matrix: np.array, activation_func: Callable):
-    '''
-    Create a layer of the neural network
-    ARGS:
-        layer_x: The values for nodes in the layer
-        weights: A matrix of incoming weights to the network
-        activation_func: Neural network activation function
-    '''
-    NetworkLayer = namedtuple('NetworkLayer', 'layer_vect, weight_matrix, activation_func')
-    return NetworkLayer(layer_vect=layer_vect, weight_matrix=weight_matrix, activation_func=activation_func)
 
 
 # Train Network
