@@ -90,33 +90,3 @@ def train_network(input_X: np.array, output_y: np.array, network: object, epoch_
         network = backward_prop(output_y, network)
 
     return network
-
-
-def init_network(layers_dims: List, activation_funcs: List) -> Callable:
-    '''
-    Initialize a neural network setting random values for weights
-    ARGS:
-        layer_dims: Layers of neural network
-        activation_funcs: List of activation function for each layer
-    '''
-
-    def _inner(input_vect):
-        if len(activation_funcs) != len(layers_dims):
-            raise NNException('Mismatch dimensions activation_funcs and layer dimensions')
-
-        curr_layer = input_vect
-        for layer_size, activation_func in zip(layers_dims, activation_funcs):
-            weights_mat = np.random.randn(layer_size, len(input_vect))
-            bias_vect = np.random.randn(1, layer_size)
-            next_layer = calculate_next_layer(weights_matrix, input_vect, bias_vect, activation_func)
-
-        return next_layer # Returns final layer
-
-    return _forward_propagation
-
-
-
-def make_node(weight_count: int, activation_func: Callable) -> Tuple[np.array, Callable]:
-    '''Creates a node of the neural network'''
-    weights = np.random.randn(weight_count)
-    return (weights, activation_func)
