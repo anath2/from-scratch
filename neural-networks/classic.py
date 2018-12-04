@@ -27,19 +27,32 @@ def make_network(input_vect, node_counts: List, activation_funcs: Callable) -> L
         layers_dims: Number of nodes in each layer of the neural network
         activation_funcs: Activation function for each layer
     '''
+    if len(node_counts) != len(activation_funcs):
+        raise NNException('Length mismatch - {node_counts} {activation_funcs}'.format(
+            node_counts=node_counts,
+            activation_funcs=activation_funcs
+        ))
 
-    def _add_to_network(prev_layer, layer_node_count, activation_func, neural_network):
-        prev_layer_vect = prev_layer.layer_vect
-        return neural_network + make_layer(prev_layer_vect, layer_node_count, activation_func)
+    network = []
+    previous_layer_vect = input_vect
+    for nc, activation_func in zip(node_counts, activation_funcs):
+        next_layer = make_layer(previous_layer_vect, nc, acitvation_func)
+        previous_layer_vect = next_layer.input_vect
+        network.append(next_layer)
 
-    #TODO
+    return network
 
-    return layers
 
 # Network Layer
 
 def make_layer(input_vect: object, layer_node_count: int, activation_func: Callable) -> object:
-    '''Create a layer of the neural network'''
+    '''
+    Create a layer of the neural network
+    ARGS:
+        input_vect: Input vector to the layer
+        layer_node_count: Number of neurons in the layer
+        activation_func: Function to calculate activation of neurons in the layer
+    '''
     input_dims = len(input_vect)
     weight_matrix = np.random.randn(layer_size, input_dims)
     bias_vector = np.random.randn(layer_size)
@@ -56,6 +69,11 @@ def calculate_next_layer(
 ) -> np.array:
     '''
     Calculates the next layer of a neural network
+    ARGS:
+        weights_matrix: Matrix with rows as input weights to each neuron
+        input_vector: Input vector to the layer
+        bias_vector: Biases to each neuron of the network
+        activation_func: Activation function for each neuron in the layer
     '''
     weighted_sum = weights_matrix.dot(input_vector)
     weighted_sum = weighted_sum + bias_vector
