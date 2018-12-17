@@ -20,28 +20,35 @@ class NNException(Exception):
 
 # Neural network
 
-def make_network(input_vect, node_counts: List, activation_funcs: Callable) -> List:
+def make_network(layer_dims: List, activation_funcs: Callable) -> List:
     '''
-    Make a neural network
+    Neural network constructor. A neural network is represented by
+    pairs of layer dimensions and their corresponding activation
+    functions
     ARGS:
-        layers_dims: Number of nodes in each layer of the neural network
-        activation_funcs: Activation function for each layer
+        layer_dims: Dimensions of each layer in the neural network
+        activation_funcs: Activations associated with each of the layers
+    RETURNS:
+        network: Neural network representation
     '''
-    if len(node_counts) != len(activation_funcs):
-        raise NNException('Length mismatch - {node_counts} {activation_funcs}'.format(
-            node_counts=node_counts,
-            activation_funcs=activation_funcs
-        ))
-
-    network = []
-    previous_layer_vect = input_vect
-    for nc, activation_func in zip(node_counts, activation_funcs):
-        next_layer = make_layer(previous_layer_vect, nc, acitvation_func)
-        previous_layer_vect = next_layer.input_vect
-        network.append(next_layer)
-
+    validate_network_params(layers_dims, activation_funcs)
+    network = list(zip(layers_dims, activation_funcs))
     return network
 
+
+def validate_network_params(layer_dims: List, activation_funcs: List[Callable]):
+    '''
+    Validate params to neural network parameters
+    ARGS:
+        layer_dims: Dimensions of layers in network
+        activation_funcs: Activation function for each layer
+    '''
+    try:
+        assert len(layers_dims) > 1
+        assert len(layers_dims) == len(activation_funcs)
+        assert all(isinstance(dim, int) for dim in layer_dims)
+    except AssertionError as err:
+        raise NNException('Network params validation error {}'.format(err))
 
 # Network Layer
 
