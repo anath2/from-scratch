@@ -9,7 +9,7 @@ import numpy as np
 from . import exceptions
 
 
-Neuron = namedtuple('Neuron', 'weights, bias')
+Neuron = namedtuple('Neuron', 'weights, bias, activation_func')
 
 
 def feed_forward(neuron: Neuron, input_arr: np.array, activation_func: Callable):
@@ -24,4 +24,4 @@ def feed_forward(neuron: Neuron, input_arr: np.array, activation_func: Callable)
         message = 'Unequal lengths - {weights} and input - {input_arr}'
         raise exceptions.NeuronError(message.format(weights=neuron.weights, input_arr=input_arr))
 
-    return activation_func(np.dot(inputs, neuron.weights) + neuron.bias)
+    return neuron.activation_func(np.dot(inputs, neuron.weights) + neuron.bias)

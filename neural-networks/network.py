@@ -13,12 +13,25 @@ from . import neuron
 def make_network(json: OrderedDict) -> List:
     '''
     Creates a network of neurons using a
+    Example Network JSON:
+    {
+      'layer0' : {
+        'neuron00': {
+          weights: [0, 1],
+          bias: 0,
+          activation_func: 'relu'
+        ...
+      },
+      {
+       'layer1' : {
+        'neuron10': {
+          weights: [0, 1],
+          bias: 0,
+          activation_func: 'relu'
+        ...
+      }
+    }
     '''
-    # Input nodes are the ones where the input symbol in
-    # Not mentioned elsewhere in any of the outputs
-    # Output nodes are the ones where the output is not
-    # connected to any of the input nodes throughout the network
-    # The rest of the nodes are hidden nodes
     pass
 
 
